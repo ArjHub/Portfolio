@@ -1,6 +1,4 @@
-function toggleMenu() {
-    const menu = document.querySelector(".menu-links");
-    const icon = document.querySelector(".hamburger-icon");
-    menu.classList.toggle("open");
-    icon.classList.toggle("open");
-  }
+const toggle=document.querySelector('.menu-toggle');const menu=document.querySelector('#nav-menu');
+if(toggle&&menu){toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));toggle.setAttribute('aria-label',open?'Open navigation':'Close navigation');menu.classList.toggle('open',!open)});menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation');menu.classList.remove('open')}));document.addEventListener('keydown',e=>{if(e.key==='Escape'){toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation');menu.classList.remove('open');toggle.focus()}})}
+const year=document.querySelector('#year');if(year)year.textContent=new Date().getFullYear();
+const copy=document.querySelector('[data-copy]');if(copy)copy.addEventListener('click',async()=>{const status=copy.parentElement.querySelector('[aria-live]');try{await navigator.clipboard.writeText(copy.dataset.copy);status.textContent='Copied'}catch{status.textContent=copy.dataset.copy}});
