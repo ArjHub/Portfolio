@@ -12,3 +12,5 @@
 .related-articles a{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.82rem}
 .related-articles a:hover{color:var(--muted)}
 .related-articles a span{color:var(--soft)}
+
+.post-row[hidden]{display:none}
