@@ -32,7 +32,7 @@
 
   function updateThemeLabel() {
     if (!themeButton) return;
-    const dark = root.dataset.theme !== "light";
+    const dark = root.dataset.theme === "dark";
     themeButton.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
     themeButton.setAttribute("title", dark ? "Switch to light theme" : "Switch to dark theme");
   }
