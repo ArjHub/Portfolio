@@ -55,8 +55,8 @@ ${ogImage ? `<meta property="og:image" content="${escape(ogImage)}"><meta name="
 <title>${escape(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="/blog.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
-<script>try{const t=localStorage.getItem('ap-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>`;
+<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="/blog.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+<script>try{const t=localStorage.getItem('ap-theme');document.documentElement.dataset.theme=t||'light'}catch(e){}</script>`;
 const header = `
 <header class="topbar"><nav class="nav shell" aria-label="Main navigation">
 <a class="wordmark" href="/" aria-label="Arjun P home"><span class="mark">AP</span><span>Arjun P</span></a>
