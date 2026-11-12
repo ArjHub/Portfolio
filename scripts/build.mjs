@@ -19,7 +19,7 @@ const md = new MarkdownIt({
     }
     return '<pre class="hljs"><code>' + md.utils.escapeHtml(code) + '</code></pre>';
   }
-}).use(anchor, { permalink: false });
+}).use(anchor, { permalink: false, slugify });
 
 const escape = (s = "") => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -66,7 +66,7 @@ const footer = `<footer class="blog-footer shell"><a class="wordmark" href="/"><
 const shell = (head, content) => `<!doctype html><html lang="en"><head>${head}</head><body>${header}<main>${content}</main>${footer}<script src="/blog.js" defer></script></body></html>`;
 const card = (p, isFeatured=false) => `<article class="post-row ${isFeatured ? "post-featured" : ""}" data-category="${escape(p.category || "Notes")}" data-search="${escape((p.title+" "+p.description+" "+p.tags.join(" ")+" "+(p.category||"")).toLowerCase())}">
 <div class="post-meta"><time datetime="${escape(p.date)}">${dateFmt(p.date)}</time><span>${p.readingTime} min read</span></div>
-<div class="post-main">${isFeatured ? '<span class="featured-note">Featured note</span>' : ""}<h2><a href="/blog/${escape(p.slug)}/">${escape(p.title)}</a></h2><p>${escape(p.description)}</p><div class="post-tags"><span>${escape(p.category || "Notes")}</span>${p.tags.slice(0,3).map(t=>`<span>${escape(t)}</span>`).join("")}</div></div>
+<div class="post-main">${p.sample ? '<span class="featured-note">Sample article · format example</span>' : (isFeatured ? '<span class="featured-note">Featured note</span>' : "")}<h2><a href="/blog/${escape(p.slug)}/">${escape(p.title)}</a></h2><p>${escape(p.description)}</p><div class="post-tags"><span>${escape(p.category || "Notes")}</span>${p.tags.slice(0,3).map(t=>`<span>${escape(t)}</span>`).join("")}</div></div>
 <a class="post-arrow" href="/blog/${escape(p.slug)}/" aria-label="Read ${escape(p.title)}">↗</a></article>`;
 const listing = `
 <section class="blog-intro shell"><p class="eyebrow">FIELD NOTES</p><h1>Writing about <em>the work.</em></h1><p class="blog-deck">Notes on data engineering, cloud systems, observability and the things I learn while building them.</p></section>
