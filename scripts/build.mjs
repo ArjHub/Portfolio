@@ -44,18 +44,18 @@ for (const file of files) {
 posts.sort((a,b) => String(b.date).localeCompare(String(a.date)));
 const featured = posts.find(p => p.featured) || posts[0];
 const categories = [...new Set(posts.map(p => p.category).filter(Boolean))].sort();
-const baseHead = (title, description, canonical, ogImage = "") => `
+const baseHead = (title, description, canonical, ogImage = "", ogType = "article") => `
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f3ee"><meta name="description" content="${escape(description)}">
 <link rel="canonical" href="${escape(canonical)}"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="article"><meta property="og:site_name" content="Arjun P">
+<meta property="og:type" content="${ogType}"><meta property="og:site_name" content="Arjun P">
 <meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}">
 <meta property="og:url" content="${escape(canonical)}"><meta name="twitter:card" content="${ogImage ? "summary_large_image" : "summary"}">
 ${ogImage ? `<meta property="og:image" content="${escape(ogImage)}"><meta name="twitter:image" content="${escape(ogImage)}">` : ""}
 <title>${escape(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="/blog.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/editorial.css"><link rel="stylesheet" href="/blog.css"><link id="hl-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"><link id="hl-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css" disabled>
 <script>try{const t=localStorage.getItem('ap-theme');document.documentElement.dataset.theme=t||'light'}catch(e){}</script>`;
 const header = `
 <header class="topbar"><nav class="nav shell" aria-label="Main navigation">
@@ -82,7 +82,7 @@ for (const entry of await fs.readdir(ROOT, {withFileTypes:true})) {
 await fs.mkdir(path.join(OUT,"blog"),{recursive:true});
 await fs.copyFile(path.join(ROOT,"blog.css"),path.join(OUT,"blog.css"));
 await fs.copyFile(path.join(ROOT,"blog.js"),path.join(OUT,"blog.js"));
-const listHead = baseHead("Writing — Arjun P","Notes on data engineering, cloud systems, observability and lessons from building.","${BASE}/blog/").replace("${BASE}","https://arjunp.website");
+const listHead = baseHead("Writing — Arjun P","Notes on data engineering, cloud systems, observability and lessons from building.",BASE+"/blog/","", "website");
 await fs.writeFile(path.join(OUT,"blog","index.html"),shell(listHead,listing));
 for (let i=0;i<posts.length;i++) {
   const p=posts[i], previous=posts[i+1], next=posts[i-1];
