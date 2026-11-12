@@ -2,7 +2,7 @@
   "use strict";
   const root=document.documentElement;
   const theme=document.querySelector(".theme-button");
-  function label(){if(theme)theme.setAttribute("aria-label",root.dataset.theme==="dark"?"Switch to light theme":"Switch to dark theme");}
+  function label(){if(theme)theme.setAttribute("aria-label",root.dataset.theme==="dark"?"Switch to light theme":"Switch to dark theme");const light=document.querySelector("#hl-light");const dark=document.querySelector("#hl-dark");if(light&&dark){light.disabled=root.dataset.theme==="dark";dark.disabled=root.dataset.theme!=="dark";}}
   if(theme){theme.addEventListener("click",function(){const next=root.dataset.theme==="dark"?"light":"dark";root.dataset.theme=next;try{localStorage.setItem("ap-theme",next)}catch(e){}label()});label();}
   const search=document.querySelector("#post-search");
   const filters=Array.from(document.querySelectorAll("[data-filter]"));
