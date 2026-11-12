@@ -26,7 +26,7 @@ const escape = (s = "") => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<"
 const readTime = s => Math.max(1, Math.ceil(s.trim().split(/\s+/).length / 220));
 const dateFmt = s => new Intl.DateTimeFormat("en-IN", { day:"numeric", month:"long", year:"numeric", timeZone:"UTC" }).format(new Date(s + "T00:00:00Z"));
 
-const files = (await fs.readdir(CONTENT)).filter(f => f.endsWith(".md") || f.endsWith(".mdx"));
+const files = (await fs.readdir(CONTENT)).filter(f => f.endsWith(".md"));
 const posts = [];
 for (const file of files) {
   const raw = await fs.readFile(path.join(CONTENT, file), "utf8");
