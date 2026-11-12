@@ -11,7 +11,12 @@
   --ink:#e9e7dc;--muted:#b0b1a5;--soft:#898d80;--line:#383e35;--line-strong:#50574b;
   --lime:#b7c39a;--lime-dim:#8c9b70;--amber:#d3ad7d;--cyan:#91b9aa;
 }
-:root{color-scheme:light}
+:root[data-theme=light]{
+  color-scheme:light;--bg:#f5f3ee;--surface:#fbfaf7;--surface-2:#eeece5;--surface-3:#e7e4db;
+  --ink:#242822;--muted:#64685f;--soft:#85877d;--line:#dedbd1;--line-strong:#c8c4b8;
+  --lime:#66734c;--lime-dim:#7e8968;--amber:#9a7144;--cyan:#527e73;
+}
+
 html{scroll-padding-top:92px}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;letter-spacing:0}
 ::selection{background:var(--lime);color:var(--bg)}
