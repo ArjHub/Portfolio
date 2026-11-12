@@ -9,6 +9,7 @@ const ROOT = process.cwd();
 const OUT = path.join(ROOT, "dist");
 const CONTENT = path.join(ROOT, "content", "blog");
 const BASE = "https://arjunp.website";
+const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const md = new MarkdownIt({
   html: false,
   linkify: true,
@@ -22,7 +23,6 @@ const md = new MarkdownIt({
 }).use(anchor, { permalink: false, slugify });
 
 const escape = (s = "") => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const readTime = s => Math.max(1, Math.ceil(s.trim().split(/\s+/).length / 220));
 const dateFmt = s => new Intl.DateTimeFormat("en-IN", { day:"numeric", month:"long", year:"numeric", timeZone:"UTC" }).format(new Date(s + "T00:00:00Z"));
 
@@ -90,9 +90,11 @@ for (let i=0;i<posts.length;i++) {
   const headings = [...p.body.matchAll(/^##?\s+(.+)$/gm)].map(m=>({text:m[1].trim(),slug:slugify(m[1])}));
   const toc = headings.length>=3 ? `<nav class="toc" aria-label="On this page"><p>On this page</p><ol>${headings.map(h=>`<li><a href="#${escape(h.slug)}">${escape(h.text)}</a></li>`).join("")}</ol></nav>` : "";
   const schema = { "@context":"https://schema.org","@type":"BlogPosting","headline":p.title,"description":p.description,"datePublished":p.date,"author":{"@type":"Person","name":"Arjun P","url":BASE},"mainEntityOfPage":canonical,...(p.cover?{"image":p.cover.startsWith("http")?p.cover:BASE+p.cover}:{})};
+  const related = posts.filter(other => other !== p && (other.category === p.category || other.tags.some(tag => p.tags.includes(tag)))).slice(0,3);
+  const relatedHtml = related.length ? `<section class="related-articles"><h2>Related writing</h2>${related.map(other=>`<a href="/blog/${escape(other.slug)}/">${escape(other.title)} <span>↗</span></a>`).join("")}</section>` : "";
   const article = `
 <article class="article-shell shell"><a class="back-blog" href="/blog/">← All writing</a><header class="article-header"><p class="article-category">${escape(p.category||"Notes")}</p><h1>${escape(p.title)}</h1><p class="article-deck">${escape(p.description)}</p><div class="article-meta"><time datetime="${escape(p.date)}">${dateFmt(p.date)}</time><span>${p.readingTime} min read</span>${p.tags.map(t=>`<span>${escape(t)}</span>`).join("")}</div>${p.cover?`<img class="article-cover" src="${escape(p.cover)}" alt="${escape(p.coverAlt||p.title)}">`:""}</header>
-<div class="article-layout">${toc}<div class="prose">${p.html}<div class="article-disclaimer">${p.sample? "This is a sample article demonstrating the publishing format. Replace or remove it before treating it as a personal publication.":""}</div></div></div>
+<div class="article-layout">${toc}<div class="prose">${p.html}<div class="article-disclaimer">${p.sample? "This is a sample article demonstrating the publishing format. Replace or remove it before treating it as a personal publication.":""}</div></div></div>${relatedHtml}
 <nav class="article-pagination" aria-label="Article navigation"><div>${previous?`<span>PREVIOUS</span><a href="/blog/${escape(previous.slug)}/">${escape(previous.title)}</a>`:""}</div><div>${next?`<span>NEXT</span><a href="/blog/${escape(next.slug)}/">${escape(next.title)}</a>`:""}</div></nav>
 </article>`;
   const articleHead = baseHead(p.title+" — Arjun P",p.description,canonical,p.cover? (p.cover.startsWith("http")?p.cover:BASE+p.cover):"") + `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g,"\\u003c")}</script>`;
