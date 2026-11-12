@@ -38,6 +38,7 @@ for (const file of files) {
   if (seenSlugs.has(slug)) throw new Error("Duplicate article slug: " + slug);
   seenSlugs.add(slug);
   const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
+  const post = { ...data, slug, tags, body: parsed.content, html: md.render(parsed.content) };
   post.readingTime = Number(data.readingTime) || readTime(parsed.content);
   if (!data.title || !data.description || !/^\d{4}-\d{2}-\d{2}$/.test(String(data.date || ""))) throw new Error("Missing title, description or YYYY-MM-DD date in " + file);
   if (data.published === true) posts.push(post);
