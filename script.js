@@ -1,23 +1,110 @@
-(function(){
-var d=document,r=d.documentElement,$=function(s,e){return(e||d).querySelector(s)},$$=function(s){return[].slice.call(d.querySelectorAll(s))};
-var tg=$('.menu-toggle'),menu=$('#nav-menu');
-function closeMenu(){tg.setAttribute('aria-expanded','false');tg.setAttribute('aria-label','Open navigation');menu.classList.remove('open')}
-tg.addEventListener('click',function(){var o=tg.getAttribute('aria-expanded')==='true';tg.setAttribute('aria-expanded',String(!o));tg.setAttribute('aria-label',o?'Open navigation':'Close navigation');menu.classList.toggle('open',!o)});
-$$('#nav-menu a').forEach(function(a){a.addEventListener('click',closeMenu)});
-d.addEventListener('keydown',function(e){if(e.key==='Escape'&&menu.classList.contains('open')){closeMenu();tg.focus()}});
-var th=$('.theme-toggle');
-function setLabel(){th.setAttribute('aria-label',r.dataset.theme==='dark'?'Switch to light theme':'Switch to dark theme')}
-th.addEventListener('click',function(){var n=r.dataset.theme==='dark'?'light':'dark';r.dataset.theme=n;try{localStorage.setItem('theme',n)}catch(e){}setLabel()});setLabel();
-var y=$('#year');if(y)y.textContent=new Date().getFullYear();
-var img=$('#portrait');function fb(){img.parentElement.classList.add('fallback')}
-img.addEventListener('error',fb);if(img.complete&&img.naturalWidth===0)fb();
-var cp=$('[data-copy]'),st=$('.status');
-cp.addEventListener('click',function(){var t=cp.dataset.copy;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){st.textContent='Email copied.'},function(){st.textContent=t})});
-if('IntersectionObserver' in window){
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
-$$('.reveal').forEach(function(s){io.observe(s)});
-var links=$$('#nav-menu a[href^="#"]');
-var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){var on=a.getAttribute('href')==='#'+e.target.id;a.classList.toggle('active',on);if(on)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current')})}})},{rootMargin:'-40% 0px -55% 0px'});
-$$('main section[id]').forEach(function(s){so.observe(s)});
-}else{$$('.reveal').forEach(function(s){s.classList.add('in')})}
+(function () {
+  "use strict";
+  const root = document.documentElement;
+  const menuButton = document.querySelector(".menu-button");
+  const nav = document.querySelector("#nav-links");
+  const themeButton = document.querySelector(".theme-button");
+
+  function closeMenu() {
+    if (!menuButton || !nav) return;
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open navigation");
+    nav.classList.remove("open");
+  }
+
+  if (menuButton && nav) {
+    menuButton.addEventListener("click", function () {
+      const open = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!open));
+      menuButton.setAttribute("aria-label", open ? "Open navigation" : "Close navigation");
+      nav.classList.toggle("open", !open);
+    });
+    nav.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", closeMenu);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && nav.classList.contains("open")) {
+        closeMenu();
+        menuButton.focus();
+      }
+    });
+  }
+
+  function updateThemeLabel() {
+    if (!themeButton) return;
+    const dark = root.dataset.theme !== "light";
+    themeButton.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+    themeButton.setAttribute("title", dark ? "Switch to light theme" : "Switch to dark theme");
+  }
+  if (themeButton) {
+    themeButton.addEventListener("click", function () {
+      const next = root.dataset.theme === "light" ? "dark" : "light";
+      root.dataset.theme = next;
+      try { localStorage.setItem("ap-theme", next); } catch (error) {}
+      updateThemeLabel();
+    });
+    updateThemeLabel();
+  }
+
+  const architectureDetails = {
+    airflow: "Airflow orchestrates four monitored workflows: orders_ingest, customers_dim, payments_etl and daily_revenue_agg. Successful runs establish the baseline for anomaly detection.",
+    stream: "Redpanda provides Kafka-compatible event transport. The Lander service and supporting collectors feed pipeline events and metric context into the platform for downstream analysis.",
+    detect: "Python detection services evaluate failed jobs, late-arriving data, schema changes and volume anomalies. Correlation groups related findings into primary and downstream incidents.",
+    api: "The Sentinel API exposes incident and evidence information. Four evidence-gathering tools support investigation; Prometheus and Grafana provide operational visibility."
+  };
+  const archButtons = Array.from(document.querySelectorAll("[data-arch]"));
+  const detail = document.querySelector("#arch-detail");
+  archButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      archButtons.forEach(function (candidate) {
+        const active = candidate === button;
+        candidate.classList.toggle("active", active);
+        candidate.setAttribute("aria-pressed", String(active));
+      });
+      if (detail) detail.textContent = architectureDetails[button.dataset.arch];
+    });
+  });
+
+  const copyButton = document.querySelector("[data-copy]");
+  const copyStatus = document.querySelector(".copy-status");
+  if (copyButton && copyStatus) {
+    copyButton.addEventListener("click", async function () {
+      const email = copyButton.dataset.copy;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(email);
+          copyStatus.textContent = "Email address copied.";
+        } else {
+          const field = document.createElement("textarea");
+          field.value = email;
+          field.setAttribute("readonly", "");
+          field.style.position = "absolute";
+          field.style.left = "-9999px";
+          document.body.appendChild(field);
+          field.select();
+          const copied = document.execCommand("copy");
+          field.remove();
+          copyStatus.textContent = copied ? "Email address copied." : email;
+        }
+      } catch (error) {
+        copyStatus.textContent = email;
+      }
+    });
+  }
+
+  const sections = Array.from(document.querySelectorAll("main section[id]"));
+  const navLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+  if ("IntersectionObserver" in window && navLinks.length) {
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(function (link) {
+          const active = link.getAttribute("href") === "#" + entry.target.id;
+          if (active) link.setAttribute("aria-current", "location");
+          else link.removeAttribute("aria-current");
+        });
+      });
+    }, { rootMargin: "-35% 0px -58% 0px" });
+    sections.forEach(function (section) { observer.observe(section); });
+  }
 })();
