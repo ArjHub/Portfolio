@@ -27,6 +27,7 @@ const readTime = s => Math.max(1, Math.ceil(s.trim().split(/\s+/).length / 220))
 const dateFmt = s => new Intl.DateTimeFormat("en-IN", { day:"numeric", month:"long", year:"numeric", timeZone:"UTC" }).format(new Date(s + "T00:00:00Z"));
 
 const files = (await fs.readdir(CONTENT)).filter(f => f.endsWith(".md"));
+const seenSlugs = new Set();
 const posts = [];
 for (const file of files) {
   const raw = await fs.readFile(path.join(CONTENT, file), "utf8");
@@ -34,6 +35,8 @@ for (const file of files) {
   const data = parsed.data;
   const slug = String(data.slug || file.replace(/\.mdx?$/, ""));
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error("Invalid slug: " + slug);
+  if (seenSlugs.has(slug)) throw new Error("Duplicate article slug: " + slug);
+  seenSlugs.add(slug);
   const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
   const plain = parsed.content.replace(/\[[^\]]*\]\([^)]*\)/g, "$1").replace(/[#>*_\x60]/g, " ");
   const post = { ...data, slug, tags, body: parsed.content, html: md.render(parsed.content), words: plain.trim().split(/\s+/).filter(Boolean).length };
