@@ -195,3 +195,5 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16p
 }
 @media(max-width:390px){.shell{width:calc(100% - 28px)}.hero h1{font-size:2.75rem}.hero-actions .button{width:auto}.availability-place{width:auto}.case-heading h3{font-size:1.85rem}.footer-links{gap:11px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+
+.case-kind .status-dot{display:none}
