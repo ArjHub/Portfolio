@@ -100,15 +100,15 @@
       </div>
       <div class="sentinel-stats">
         <div><strong>4/4</strong><span>DAGs successful in a normal run</span></div>
-        <div><strong>23</strong><span>detector findings in an observed run</span></div>
-        <div><strong>17</strong><span>correlated incidents generated</span></div>
+        <div><strong>25</strong><span>findings in the latest fault-injection run</span></div>
+        <div><strong>19</strong><span>incidents in the latest fault-injection run</span></div>
         <div><strong>663</strong><span>rows in the volume-drop scenario</span></div>
       </div>
       <div class="case-bottom">
         <div class="fault-block"><h4>CONTROLLED FAULT SCENARIOS</h4><div class="fault-tags"><span>missing_amount</span><span>volume_drop</span><span>stale_customers</span></div><p>A volume-drop test returned 663 rows against an approximate expected volume of 1,979, producing a downstream incident.</p></div>
-        <div class="stack-block"><h4>IMPLEMENTED STACK</h4><p>Python · Apache Airflow · Redpanda · PostgreSQL · FastAPI · Prometheus · Grafana · StatsD Exporter · Docker Compose</p><p class="fine-print">Diagnosis note: rule-based/mock diagnosis and evidence collection were demonstrated. A live Claude-powered diagnosis is not represented here as a verified shipped capability.</p></div>
+        <div class="stack-block"><h4>IMPLEMENTED STACK</h4><p>Python · Apache Airflow · Redpanda · PostgreSQL · FastAPI · Prometheus · Grafana · StatsD Exporter · Docker Compose</p><p class="fine-print">Diagnosis note: the latest inspected diagnosis was rule-based/mock (confidence 0.6, retry_safe=false) and used four evidence tools. A live Claude-powered diagnosis is not represented here as a verified shipped capability.</p></div>
       </div>
-      <div class="case-footnote">Observed detector breakdown: 13 failed-job findings, 1 late-data finding, 5 schema-change findings and 4 volume anomalies. The 17 incidents comprised 9 primary and 8 downstream incidents. The API health endpoint <code>/healthz</code> returned HTTP 200; Slack notification functionality was demonstrated.</div>
+      <div class="case-footnote">Latest inspected fault-injection run: 4/4 DAGs succeeded, the detector recorded 25 findings and 19 incidents, with one primary and one downstream incident open at inspection time. The volume-drop scenario returned 663 rows against an approximate expected volume of 1,979. Prometheus targets were UP and the API health endpoint <code>/healthz</code> returned HTTP 200. Slack notification functionality was demonstrated; no custom Grafana dashboard JSON was present in the inspected project state.</div>
     </article>
 
     <article class="case case-secondary" id="lakehouse">
